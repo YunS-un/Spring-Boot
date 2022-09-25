@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.yun.mapper.LeaveMapper">
+
+    <select id="selectLeave" resultType="leave">
+        select * from `leave` where student_id = #{studentId}
+    </select>
+
+    <delete id="deleteOne">
+        delete from `leave` where id = #{id}
+    </delete>
+
+    <select id="selectOne" resultType="leave">
+        select * from `leave` where id = #{id}
+    </select>
+
+    <update id="updateOne">
+        update `leave` set info = #{info},departure=#{departure},destination=#{destination},return_time=#{returnTime} where id=#{id}
+    </update>
+
+    <insert id="insertOne">
+        insert into `leave` value(DEFAULT,#{studentId},#{info},#{departure},#{destination},#{returnTime},DEFAULT,DEFAULT)
+    </insert>
+
+</mapper>
