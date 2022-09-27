@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>学工系统</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/elementui/index.css">
+</head>
+<style>
+    .fogetPwd{
+        height: 39px !important;
+    }
+    #getCode {
+        color: #FFFFFF !important;
+        background-color: #7366ff;
+        width: 100px;
+        margin-left: 80px;
+    }
+    #email {
+        width: 250px;
+    }
+</style>
+
+<body>
+<div id="main-wrapper" class="show">
+
+    <div class="login-tabib">
+        <div>
+            <div class="text-center logo">
+                <img class="img-fluid" src="/static/picture/logo.png">
+            </div>
+            <div class="login-main">
+                <form class="theme-form" method="post" action="#">
+                    <h4>登录账号</h4>
+                    <div class="form-group m-b-10">
+                        <label class="col-form-label">Email</label>
+                        <input class="form-control" v-model="formData.email" type="email" placeholder="XXXX@XXX.com">
+                    </div>
+                    <div class="form-group m-b-10">
+                        <label class="col-form-label">Password</label>
+                        <div class="form-input position-relative">
+                            <input class="form-control" v-model="formData.password" type="password" placeholder="*********">
+                            <div class="show-hide"><span class="show"></span></div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-10">
+                        <label class="col-form-label pt-0 ">Enter Code</label>
+                        <div class="row g-2">
+                            <div class="col-md-12 col-lg-6">
+                                <div class="form-group mb-0">
+                                    <input id="email" v-model="formData.emailCode" class="form-control" type="text"
+                                           placeholder="XXXX">
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-6">
+                                <div class="form-group mb-0">
+                                    <input id="getCode" class="form-control" type="button" @click="getCode()"
+                                           :value="codeText" :disabled="disabled">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-0">
+                        <div class="checkbox p-0">
+                            <input id="radio-role1" type="radio" v-model="formData.role" value="1">
+                            <label class="text-muted" for="radio-role1">Student</label>
+                            <input id="radio-role2" type="radio" v-model="formData.role" value="2">
+                            <label class="text-muted" for="radio-role2">Teacher</label>
+                            <input id="radio-role3" type="radio" v-model="formData.role" value="3">
+                            <label class="text-muted" for="radio-role3">Admin</label>
+                        </div>
+                    </div>
+                    <div class="form-group mb-0 fogetPwd">
+                        <a class="link text-primary" th:href="@{/handle/forgetPwd}">忘记密码?</a>
+                    </div>
+                    <div class = "errorPwdDialog">
+                        <el-dialog title="提示" :visible.sync="errorPwdDialog" width="30%" center>
+                            <span>你的账号或者密码错误</span>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button @click="errorPwdDialog = false">取 消</el-button>
+                                <el-button type="primary" @click="errorPwdDialog = false">确 定</el-button>
+                            </span>
+                        </el-dialog>
+                    </div>
+                    <div class="mb-0">
+                        <div class="mt-3">
+                            <input type="button" @click="login()" value="登录" class="btn btn-primary w-100"/>
+                        </div>
+                    </div>
+                    <p class="mt-4 mb-0">还没有账号?
+                        <a class="ms-2 text-primary text-center" th:href="@{/handle/register}">
+                            创建账号
+                        </a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- JQuery v3.5.1 -->
+<script src="/static/js/jquery.min.js"></script>
+
+<!-- popper js -->
+<script src="/static/js/popper.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="/static/js/bootstrap.js"></script>
+
+<!-- Moment -->
+<script src="/static/js/moment.min.js"></script>
+
+<!-- Date Range Picker -->
+<script src="/static/js/daterangepicker.min.js"></script>
+
+<!-- Main Custom JQuery -->
+<script src="/static/js/toggleFullScreen.js"></script>
+<script src="/static/js/main.js"></script>
+
+<script src="/static/js/vue.js"></script>
+
+<script src="/static/elementui/index.js"></script>
+
+<script src="/static/js/axios-0.18.0.js"></script>
+
+</body>
+
+<script>
+
+    var vue = new Vue({
+        el: "#main-wrapper",
+        data:{
+            codeText: "获取验证码",
+            formData: {
+                email: "",
+                password: "",
+                role: "",
+                emailCode:"",
+            },
+            errorPwdDialog: false,
+        },
+        methods:{
+            getCode() {
+                if (this.formData.email == "") {
+                    this.$message.error("Email不能为空");
+                } else {
+                    axios.get("/handle/getEmailCode/" + this.formData.email).then((res) => {
+                        if (res.data.flag) {
+                            this.$message.success("获取验证码成功");
+                        } else {
+                            this.$message.error("获取验证码失败");
+                        }
+                    })
+                    let maxNum = 60;
+                    let oldCodeText = this.codeText;
+                    this.codeText = `${maxNum}s重新发送`;
+                    let codeCountDown = setInterval(() => {
+                        this.disabled = true;
+                        let countDownNum = maxNum--;
+                        this.codeText = `${countDownNum}s重新发送`;
+                        if (countDownNum == 0) {
+                            this.codeText = oldCodeText;
+                            clearInterval(codeCountDown);
+                            this.disabled = false;
+                        }
+                    }, 1000);
+                }
+            },
+
+            login(){
+                axios.post("/handle/loginSubmit",this.formData).then((res) =>{
+                    if (res.data.flag) {
+                        window.location.href = "/index";
+                    }else {
+                        this.errorPwdDialog = true;
+                    }
+                })
+            },
+        }
+    })
+
+
+</script>
+
+</html>
