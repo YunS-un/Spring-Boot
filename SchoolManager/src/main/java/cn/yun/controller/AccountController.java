@@ -36,42 +36,24 @@ public class AccountController {
         return "login";
     }
 
+    @RequestMapping("/loginEmail")
+    public String loginEmail(HttpSession session){
+        return "loginEmail";
+    }
+
     //登陆判断
     @RequestMapping("/handle/loginSubmit")
     @ResponseBody
     public R loginSubmit(@RequestBody Account account, HttpSession session){
-        ValueOperations<String, String> value = redisTemplate.opsForValue();
-        String mailCode = value.get("mailCode");
-        System.err.println(mailCode);
-        System.err.println(account.getEmailCode());
-        if(mailCode != null && account.getEmailCode().equals(mailCode)){
-            if(account.getRole() == 1){
-                Student student = new Student(account.getEmail(),account.getPassword(),account.getRole());
-                student = accountService.studentLogin(student);
-                if (student != null){
-                    session.setAttribute("account",account);
-                    session.setAttribute("student",student);
-                    return new R(true);
-                }
-            }else if(account.getRole() == 2){
-                Teacher teacher = new Teacher(account.getEmail(), account.getPassword(), account.getRole());
-                teacher = accountService.teacherLogin(teacher);
-                if (teacher != null){
-                    session.setAttribute("account",account);
-                    session.setAttribute("teacher",teacher);
-                    return new R(true);
-                }
-            }else{
-                Admin admin = new Admin(account.getEmail(), account.getPassword(), account.getRole());
-                admin = accountService.adminLogin(admin);
-                if (admin != null){
-                    session.setAttribute("account",account);
-                    session.setAttribute("admin",admin);
-                    return new R(true);
-                }
-            }
-        }
-        return new R(false);
+        R r = accountService.loginSub(account, session);
+        return r;
+    }
+
+    @RequestMapping("/handle/loginEmailSubmit")
+    @ResponseBody
+    public R loginEmailSubmit(@RequestBody Account account, HttpSession session){
+        R r = accountService.loginEmailSub(account, session);
+        return r;
     }
 
     @GetMapping(value = "/handle/getEmailCode/{email}")

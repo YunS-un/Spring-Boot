@@ -23,6 +23,9 @@
     #email {
         width: 250px;
     }
+    #emailLogin {
+        margin-right: 80px;
+    }
 </style>
 
 <body>
@@ -39,13 +42,6 @@
                     <div class="form-group m-b-10">
                         <label class="col-form-label">Email</label>
                         <input class="form-control" v-model="formData.email" type="email" placeholder="XXXX@XXX.com">
-                    </div>
-                    <div class="form-group m-b-10">
-                        <label class="col-form-label">Password</label>
-                        <div class="form-input position-relative">
-                            <input class="form-control" v-model="formData.password" type="password" placeholder="*********">
-                            <div class="show-hide"><span class="show"></span></div>
-                        </div>
                     </div>
                     <div class="form-group m-b-10">
                         <label class="col-form-label pt-0 ">Enter Code</label>
@@ -75,16 +71,8 @@
                         </div>
                     </div>
                     <div class="form-group mb-0 fogetPwd">
+                        <a class="link text-primary" id="emailLogin" th:href="@{/login}">密码登陆</a>
                         <a class="link text-primary" th:href="@{/handle/forgetPwd}">忘记密码?</a>
-                    </div>
-                    <div class = "errorPwdDialog">
-                        <el-dialog title="提示" :visible.sync="errorPwdDialog" width="30%" center>
-                            <span>你的账号或者密码错误</span>
-                            <span slot="footer" class="dialog-footer">
-                                <el-button @click="errorPwdDialog = false">取 消</el-button>
-                                <el-button type="primary" @click="errorPwdDialog = false">确 定</el-button>
-                            </span>
-                        </el-dialog>
                     </div>
                     <div class="mb-0">
                         <div class="mt-3">
@@ -142,7 +130,6 @@
                 role: "",
                 emailCode:"",
             },
-            errorPwdDialog: false,
         },
         methods:{
             getCode() {
@@ -173,11 +160,11 @@
             },
 
             login(){
-                axios.post("/handle/loginSubmit",this.formData).then((res) =>{
+                axios.post("/handle/loginEmailSubmit",this.formData).then((res) =>{
                     if (res.data.flag) {
                         window.location.href = "/index";
                     }else {
-                        this.errorPwdDialog = true;
+                        this.$message.error(res.data.msg);
                     }
                 })
             },

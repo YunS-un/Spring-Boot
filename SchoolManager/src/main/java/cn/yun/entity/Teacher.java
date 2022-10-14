@@ -41,6 +41,11 @@ public class Teacher{
         this.role = role;
     }
 
+    public Teacher(String email, Integer role) {
+        this.email = email;
+        this.role = role;
+    }
+
     public Teacher(Integer id, String username, String email, byte sex, String phone, String birthday, String nation, String address) {
         this.id = id;
         this.username = username;

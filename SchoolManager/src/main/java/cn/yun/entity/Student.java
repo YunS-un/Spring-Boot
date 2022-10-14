@@ -45,6 +45,11 @@ public class Student{
         this.role = role;
     }
 
+    public Student(String email, Integer role) {
+        this.email = email;
+        this.role = role;
+    }
+
     public Student(Integer id, String username, String email, byte sex, String phone, String birthday, String nation, String address) {
         this.id = id;
         this.username = username;

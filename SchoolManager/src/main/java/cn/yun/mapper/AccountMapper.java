@@ -14,6 +14,12 @@ public interface AccountMapper {
 
     Admin selectAdmin(Admin admin);
 
+    Student selectStudentForCode(Student student);
+
+    Teacher selectTeacherForCode(Teacher teacher);
+
+    Admin selectAdminForCode(Admin admin);
+
     int addOneSt(Student student);
 
     int addOneTc(Teacher teacher);

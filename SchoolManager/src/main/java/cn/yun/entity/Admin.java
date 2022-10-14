@@ -20,4 +20,9 @@ public class Admin {
         this.password = password;
         this.role = role;
     }
+
+    public Admin(String email, Integer role) {
+        this.email = email;
+        this.role = role;
+    }
 }

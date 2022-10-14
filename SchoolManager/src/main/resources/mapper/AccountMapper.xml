@@ -16,6 +16,18 @@
         select * from admins where email = #{email} and password = #{password} and role = #{role}
     </select>
 
+    <select id="selectStudentForCode" resultType="student">
+        select * from student where email = #{email} and role = #{role}
+    </select>
+
+    <select id="selectTeacherForCode" resultType="teacher">
+        select * from teacher where email = #{email} and role = #{role}
+    </select>
+
+    <select id="selectAdminForCode" resultType="admin">
+        select * from admins where email = #{email}  and role = #{role}
+    </select>
+
     <insert id="addOneSt">
         insert into student values(DEFAULT,#{username},#{password},#{email},DEFAULT,DEFAULT,DEFAULT,DEFAULT,DEFAULT,DEFAULT,#{role})
     </insert>
